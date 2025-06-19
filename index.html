@@ -11,6 +11,7 @@
             --light-bg: #333;
             --text-white: #fff;
             --shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+            --transition: all 0.3s ease;
         }
 
         body {
@@ -18,38 +19,37 @@
             padding: 20px;
             min-height: 100vh;
             background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            place-items: center;
             font-family: 'Arial', sans-serif;
         }
 
-        .container {
+        .app-container {
             background: var(--dark-bg);
             color: var(--text-white);
             padding: 20px;
             border-radius: 10px;
             width: 300px;
             box-shadow: var(--shadow);
+            border: 2px solid var(--primary-orange);
             overflow: hidden;
             position: relative;
-            border: 2px solid var(--primary-orange);
         }
 
-        .header {
+        .app-header {
             text-align: center;
             font-size: 2em;
             color: var(--primary-orange);
-            font-weight: bold;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid var(--primary-orange);
-            animation: fadeIn 1s ease-in;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .input-section {
+        .app-inputs {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -59,7 +59,7 @@
             position: relative;
         }
 
-        .input-group label {
+        .input-group__label {
             display: block;
             color: var(--primary-orange);
             font-weight: 600;
@@ -67,7 +67,7 @@
             animation: slideUp 0.5s ease-out;
         }
 
-        .input-group input {
+        .input-group__input {
             width: 100%;
             padding: 10px;
             border: none;
@@ -76,15 +76,15 @@
             color: var(--text-white);
             font-size: 1em;
             box-sizing: border-box;
-            transition: background 0.3s ease;
+            transition: var(--transition);
         }
 
-        .input-group input:focus {
+        .input-group__input:focus {
             background: #444;
             outline: none;
         }
 
-        .input-group button {
+        .input-group__button {
             width: 100%;
             padding: 10px;
             background: var(--primary-orange);
@@ -93,29 +93,29 @@
             border-radius: 5px;
             font-size: 1em;
             cursor: pointer;
-            transition: transform 0.3s ease, background 0.3s ease;
+            transition: var(--transition);
         }
 
-        .input-group button:hover {
+        .input-group__button:hover {
             transform: scale(1.05);
             background: #e03a00;
         }
 
-        .dashboard {
+        .app-dashboard {
             text-align: center;
             margin-top: 20px;
             padding: 15px;
             background: var(--light-bg);
             border-radius: 5px;
-            animation: fadeIn 1s ease-in 0.5s backwards;
+            animation: fadeIn 0.8s ease-out 0.5s backwards;
         }
 
-        .dashboard p {
+        .app-dashboard p {
             margin: 5px 0;
             font-size: 1.1em;
         }
 
-        #expenseList {
+        .app-expense-list {
             list-style: none;
             padding: 0;
             max-height: 150px;
@@ -124,19 +124,19 @@
             animation: slideIn 0.8s ease-out;
         }
 
-        #expenseList li {
+        .app-expense-list__item {
             padding: 10px;
             background: #222;
             margin-bottom: 10px;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            transition: var(--transition);
         }
 
-        #expenseList li:hover {
+        .app-expense-list__item:hover {
             background: #2f2f2f;
         }
 
-        #exportBtn {
+        .app-export-button {
             width: 100%;
             padding: 10px;
             background: var(--primary-orange);
@@ -145,10 +145,10 @@
             border-radius: 5px;
             font-size: 1em;
             cursor: pointer;
-            transition: transform 0.3s ease, background 0.3s ease;
+            transition: var(--transition);
         }
 
-        #exportBtn:hover {
+        .app-export-button:hover {
             transform: scale(1.05);
             background: #e03a00;
         }
@@ -176,143 +176,168 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">ExpenseTrack</div>
-        <div class="input-section">
+    <div class="app-container">
+        <div class="app-header">ExpenseTrack</div>
+        <div class="app-inputs">
             <div class="input-group">
-                <label for="amount">Amount (INR)</label>
-                <input type="number" id="amount" placeholder="Enter amount" required>
+                <label class="input-group__label" for="amount">Amount (INR)</label>
+                <input class="input-group__input" type="number" id="amount" placeholder="Enter amount" required>
             </div>
             <div class="input-group">
-                <label for="details">Details</label>
-                <input type="text" id="details" placeholder="Enter details" required>
+                <label class="input-group__label" for="details">Details</label>
+                <input class="input-group__input" type="text" id="details" placeholder="Enter details" required>
             </div>
             <div class="input-group">
-                <button onclick="addExpense()">Add Expense</button>
+                <button class="input-group__button" onclick="addExpense()">Add Expense</button>
             </div>
         </div>
-        <div class="dashboard">
+        <div class="app-dashboard">
             <p>Total Spent: <span id="totalSpent">0</span> INR</p>
             <p>Spending Limit: <span id="limit">5000</span> INR</p>
             <canvas id="expenseChart"></canvas>
         </div>
-        <ul id="expenseList"></ul>
-        <button id="exportBtn" onclick="exportToExcel()">Export to Excel</button>
+        <ul class="app-expense-list"></ul>
+        <button class="app-export-button" onclick="exportToExcel()">Export to Excel</button>
     </div>
 
     <!-- Supabase and Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Initialize Supabase client
-        const supabaseUrl = 'YOUR_SUPABASE_URL'; // Replace with your Supabase URL
-        const supabaseAnonKey = 'YOUR_ANON_KEY'; // Replace with your anon key
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        // Supabase Configuration
+        const supabaseConfig = {
+            url: 'YOUR_SUPABASE_URL', // Replace with your Supabase URL
+            anonKey: 'YOUR_ANON_KEY', // Replace with your anon key
+        };
+        const supabase = supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
 
-        let expenses = [];
-        let chart;
-
-        // Fetch expenses from Supabase
-        async function fetchExpenses() {
-            const { data, error } = await supabase.from('expenses').select('*');
-            if (error) console.error('Error fetching expenses:', error);
-            else {
-                expenses = data || [];
-                updateList();
-                updateDashboard();
-                updateChart();
+        class ExpenseTracker {
+            constructor() {
+                this.expenses = [];
+                this.chart = null;
+                this.elements = {
+                    amount: document.getElementById('amount'),
+                    details: document.getElementById('details'),
+                    totalSpent: document.getElementById('totalSpent'),
+                    limit: document.getElementById('limit'),
+                    expenseList: document.querySelector('.app-expense-list'),
+                    expenseChart: document.getElementById('expenseChart').getContext('2d'),
+                };
+                this.init();
             }
-        }
 
-        // Add expense to Supabase
-        async function addExpense() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const details = document.getElementById('details').value;
+            async init() {
+                await this.fetchExpenses();
+                this.setupRealTime();
+            }
 
-            if (amount && details) {
-                const { error } = await supabase.from('expenses').insert({
-                    amount,
-                    details,
-                    date: new Date().toISOString()
+            async fetchExpenses() {
+                try {
+                    const { data, error } = await supabase.from('expenses').select('*');
+                    if (error) throw error;
+                    this.expenses = data || [];
+                    this.renderList();
+                    this.updateDashboard();
+                    this.renderChart();
+                } catch (error) {
+                    console.error('Fetch error:', error.message);
+                }
+            }
+
+            setupRealTime() {
+                supabase
+                    .channel('custom-all-channel')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, () => this.fetchExpenses())
+                    .subscribe();
+            }
+
+            async addExpense() {
+                const amount = parseFloat(this.elements.amount.value);
+                const details = this.elements.details.value.trim();
+
+                if (!amount || !details) return;
+
+                try {
+                    const { error } = await supabase.from('expenses').insert({
+                        amount,
+                        details,
+                        date: new Date().toISOString(),
+                    });
+                    if (error) throw error;
+                    this.elements.amount.value = '';
+                    this.elements.details.value = '';
+                } catch (error) {
+                    console.error('Add error:', error.message);
+                }
+            }
+
+            renderList() {
+                this.elements.expenseList.innerHTML = '';
+                this.expenses.forEach(expense => {
+                    const li = document.createElement('li');
+                    li.className = 'app-expense-list__item';
+                    li.textContent = `${new Date(expense.date).toLocaleString()} - ${expense.details}: ${expense.amount} INR`;
+                    this.elements.expenseList.appendChild(li);
                 });
-                if (error) console.error('Error adding expense:', error);
-                else {
-                    fetchExpenses();
-                    document.getElementById('amount').value = '';
-                    document.getElementById('details').value = '';
-                }
+            }
+
+            updateDashboard() {
+                const total = this.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                this.elements.totalSpent.textContent = total.toFixed(2);
+            }
+
+            renderChart() {
+                const totalSpent = this.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                const limit = parseFloat(this.elements.limit.textContent);
+
+                if (this.chart) this.chart.destroy();
+
+                this.chart = new Chart(this.elements.expenseChart, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Total Spent', 'Spending Limit'],
+                        datasets: [{
+                            label: 'INR',
+                            data: [totalSpent, limit],
+                            backgroundColor: [var(--primary-orange), '#555'],
+                            borderColor: [var(--primary-orange), '#555'],
+                            borderWidth: 1,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: var(--text-white) } },
+                            x: { ticks: { color: var(--text-white) } },
+                        },
+                        plugins: { legend: { labels: { color: var(--text-white) } } },
+                    },
+                });
+            }
+
+            exportToExcel() {
+                const csv = [
+                    'Date,Details,Amount (INR)',
+                    ...this.expenses.map(expense => `${new Date(expense.date).toLocaleString()},${expense.details},${expense.amount}`),
+                ].join('\n');
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'expenses.csv';
+                a.click();
+                URL.revokeObjectURL(url);
             }
         }
 
-        // Update expense list display
-        function updateList() {
-            const list = document.getElementById('expenseList');
-            list.innerHTML = '';
-            expenses.forEach(expense => {
-                const li = document.createElement('li');
-                li.textContent = `${new Date(expense.date).toLocaleString()} - ${expense.details}: ${expense.amount} INR`;
-                list.appendChild(li);
-            });
-        }
-
-        // Update dashboard totals
-        function updateDashboard() {
-            const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            document.getElementById('totalSpent').textContent = total.toFixed(2);
-        }
-
-        // Update dynamic chart
-        function updateChart() {
-            const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const limit = parseFloat(document.getElementById('limit').textContent);
-
-            if (chart) chart.destroy();
-
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Total Spent', 'Spending Limit'],
-                    datasets: [{
-                        label: 'INR',
-                        data: [totalSpent, limit],
-                        backgroundColor: ['var(--primary-orange)', '#555'],
-                        borderColor: ['var(--primary-orange)', '#555'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { color: var(--text-white) }
-                        },
-                        x: { ticks: { color: var(--text-white) } }
-                    },
-                    plugins: {
-                        legend: { labels: { color: var(--text-white) } }
-                    }
-                }
-            });
-        }
-
-        // Export to CSV
-        function exportToExcel() {
-            let csv = 'Date,Details,Amount (INR)\n';
-            expenses.forEach(expense => {
-                csv += `${new Date(expense.date).toLocaleString()},${expense.details},${expense.amount}\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'expenses.csv';
-            a.click();
-        }
-
-        // Initial fetch
-        fetchExpenses();
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            const tracker = new ExpenseTracker();
+            document.querySelector('.input-group__button').addEventListener('click', () => tracker.addExpense());
+            document.querySelector('.app-export-button').addEventListener('click', () => tracker.exportToExcel());
+        });
     </script>
 </body>
 </html>
